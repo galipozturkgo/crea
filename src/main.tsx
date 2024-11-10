@@ -1,13 +1,21 @@
-import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 
-import App from './app/app';
+import App from './app/App';
+
+async function enableMocking() {
+  if (process.env.NODE_ENV !== 'development') {
+    return;
+  }
+
+  const { browser } = await import('./mocks/base/Browser');
+
+  return browser.start();
+}
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-root.render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
+
+enableMocking().then(() => {
+  root.render(<App />);
+});
